@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+body {
+	margin:0px;
+}
+#map {
+	height:100vh;
+	width:100vw;
+}
+</style>
+</head>
+<body>
+<div id="map"></div>
+<script>
+var postAddress = ["臺中市西屯區臺灣大道4段1727號", "臺中市西屯區河南路2段268號", "臺中市西屯區黎明路3段130號", "臺中市西屯區青海路1段83號", "臺中市西屯區工業區六路10號", "臺中市西屯區臺灣大道4段1650號", "臺中市西屯區永安里西屯路3段166-80號", "臺中市西屯區大隆路60、62號", "臺中市西屯區福順路318號"];
+var gasAddress = ["臺中市西屯區上石里河南路二段341號", "臺中市西屯區工業八路二號", "臺中市西屯區中清路194之30號", "臺中市西屯區中清路225-1號", "臺中市西屯區中清路三段1號", "臺中市西屯區中港路三段286之8號", "臺中市西屯區文心路三段187號", "臺中市西屯區文心路三段2號", "臺中市西屯區台中港路二段98號", "臺中市西屯區台中港路三段119號", "臺中市西屯區台中港路三段236-6號", "臺中市西屯區安和路49-5號", "臺中市西屯區西屯路三段77之3號", "臺中市西屯區西屯路三段90-28號", "臺中市西屯區協和里安和路51之8號", "臺中市西屯區東大路一段1220號", "臺中市西屯區河南路二段198號", "臺中市西屯區河南路二段35號", "臺中市西屯區青海路二段211號", "臺中市西屯區福科路110號", "臺中市西屯區福康路199號", "臺中市西屯區福雅路300號", "臺中市西屯區臺灣大道二段917號", "臺中市西屯區廣福路191號", "臺中市西屯區環中路一段1670號", "臺中市西屯區環中路一段2490號", "臺中市西屯區環中路二段1286號", "臺中市西屯區環中路二段698號", "臺中市西屯區環中路三段800號"];
+var icons = {
+	gas:{
+		name:"gas",
+		icon:"gas.png"
+	},
+	post:{
+		name:"post",
+		icon:"post.png"
+	}
+};
+var postCounter = 0;
+var gasCounter = 0;
+
+function initMap() {
+	var fcu = {lat:24.178709, lng:120.648306};
+	var geocoder = new google.maps.Geocoder();
+	var map = new google.maps.Map(document.getElementById("map"), {
+		zoom: 16,
+		center: fcu
+	});
+	var marker = new google.maps.Marker({
+		position:fcu,
+		icon:icons["gas"].icon,
+		map:map
+	});
+	var postTimer = setInterval(function() {
+		if(postCounter == postAddress.length - 1) {
+			clearInterval(postTimer);
+			var gasTimer = setInterval(function() {
+				if(gasCounter == gasAddress.length - 1) {
+					clearInterval(gasTimer);
+				}
+				geocoder.geocode({"address":gasAddress[gasCounter]}, function(results, status) {
+					if(status == "OK") {
+						var marker = new google.maps.Marker({
+							position:results[0].geometry.location,
+							icon:icons["gas"].icon,
+							map:map
+						});
+					}
+					else {
+						console.log("ERROR " + status);
+					}
+				});
+				gasCounter++;
+			}, 600);
+		}
+		geocoder.geocode({"address":postAddress[postCounter]}, function(results, status) {
+			if(status == "OK") {
+				var marker = new google.maps.Marker({
+					position:results[0].geometry.location,
+					icon:icons["post"].icon,
+					map:map
+				});
+			}
+			else {
+				console.log("ERROR " + status);
+			}
+		});
+		postCounter++;
+	}, 600);
+}
+</script>
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAFfUhLATzGpozEtqhjgE23EIjA5GY4cFQ&callback=initMap">
+</script>
+</body>
+</html>
