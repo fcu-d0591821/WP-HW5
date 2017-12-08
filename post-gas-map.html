@@ -3,11 +3,11 @@
 <head>
 <style>
 body {
-	margin:0px;
+    margin:0px;
 }
 #map {
-	height:100vh;
-	width:100vw;
+    height:100vh;
+    width:100vw;
 }
 </style>
 </head>
@@ -16,67 +16,58 @@ body {
 <script>
 var postAddress = ["臺中市西屯區臺灣大道4段1727號", "臺中市西屯區河南路2段268號", "臺中市西屯區黎明路3段130號", "臺中市西屯區青海路1段83號", "臺中市西屯區工業區六路10號", "臺中市西屯區臺灣大道4段1650號", "臺中市西屯區永安里西屯路3段166-80號", "臺中市西屯區大隆路60、62號", "臺中市西屯區福順路318號"];
 var gasAddress = ["臺中市西屯區上石里河南路二段341號", "臺中市西屯區工業八路二號", "臺中市西屯區中清路194之30號", "臺中市西屯區中清路225-1號", "臺中市西屯區中清路三段1號", "臺中市西屯區中港路三段286之8號", "臺中市西屯區文心路三段187號", "臺中市西屯區文心路三段2號", "臺中市西屯區台中港路二段98號", "臺中市西屯區台中港路三段119號", "臺中市西屯區台中港路三段236-6號", "臺中市西屯區安和路49-5號", "臺中市西屯區西屯路三段77之3號", "臺中市西屯區西屯路三段90-28號", "臺中市西屯區協和里安和路51之8號", "臺中市西屯區東大路一段1220號", "臺中市西屯區河南路二段198號", "臺中市西屯區河南路二段35號", "臺中市西屯區青海路二段211號", "臺中市西屯區福科路110號", "臺中市西屯區福康路199號", "臺中市西屯區福雅路300號", "臺中市西屯區臺灣大道二段917號", "臺中市西屯區廣福路191號", "臺中市西屯區環中路一段1670號", "臺中市西屯區環中路一段2490號", "臺中市西屯區環中路二段1286號", "臺中市西屯區環中路二段698號", "臺中市西屯區環中路三段800號"];
+var postLocation = [{lat:24.1824159, lng:120.60272800000007}, {lat:24.175272, lng:120.649134}, {lat:24.1766902, lng:120.63764270000001}, {lat:24.1646942, lng:120.65424009999992}, {lat:24.1699279, lng:120.6064543}, {lat:24.1837584, lng:120.60370660000001}, {lat:24.1906027, lng:120.61234749999994}, {lat:24.1564627, lng:120.65296050000006}, {lat:24.1834782, lng:120.61855850000006}];
+var gasLocation = [{lat:24.1721424, lng:120.64540119999992}, {lat:24.174953, lng:120.60431990000006}, {lat:24.201513, lng:120.65481699999998}, {lat:24.207987, lng:120.65121750000003}, {lat:24.2081756, lng:120.65102580000007}, {lat:24.1855276, lng:120.61400079999999}, {lat:24.171489, lng:120.65982400000007}, {lat:24.1635083, lng:120.65046789999997}, {lat:24.1662837, lng:120.6451207}, {lat:24.171188, lng:120.63174609999999}, {lat:24.1855276, lng:120.61400079999999}, {lat:24.1659893, lng:120.61855889999993}, {lat:24.182369, lng:120.63362800000004}, {lat:24.183941, lng:120.62977109999997}, {lat:24.166172, lng:120.61896300000001}, {lat:24.2012093, lng:120.60997139999995}, {lat:24.1763329, lng:120.65257900000006}, {lat:24.1738445, lng:120.65999680000004}, {lat:24.1713234, lng:120.64392999999995}, {lat:24.180119, lng:120.63249199999996}, {lat:24.1874209, lng:120.61839669999995}, {lat:24.192622, lng:120.62316599999997}, {lat:24.1618038, lng:120.65049620000002}, {lat:24.1983873, lng:120.64257889999999}, {lat:24.201445, lng:120.66319599999997}, {lat:24.2007819, lng:120.65697599999999}, {lat:24.179254, lng:120.63435900000002}, {lat:24.1951644, lng:120.64425649999998}, {lat:24.1628253, lng:120.62839429999997}];
 var icons = {
-	gas:{
-		name:"gas",
-		icon:"gas.png"
-	},
-	post:{
-		name:"post",
-		icon:"post.png"
-	}
+    gas:{
+        name:"gas",
+        icon:"gas.png"
+    },
+    post:{
+        name:"post",
+        icon:"post.png"
+    }
 };
-var postCounter = 0;
-var gasCounter = 0;
 
-function initMap() {
-	var fcu = {lat:24.178709, lng:120.648306};
-	var geocoder = new google.maps.Geocoder();
-	var map = new google.maps.Map(document.getElementById("map"), {
-		zoom: 16,
-		center: fcu
-	});
-	var marker = new google.maps.Marker({
-		position:fcu,
-		icon:icons["gas"].icon,
-		map:map
-	});
-	var postTimer = setInterval(function() {
-		if(postCounter == postAddress.length - 1) {
-			clearInterval(postTimer);
-			var gasTimer = setInterval(function() {
-				if(gasCounter == gasAddress.length - 1) {
-					clearInterval(gasTimer);
-				}
-				geocoder.geocode({"address":gasAddress[gasCounter]}, function(results, status) {
-					if(status == "OK") {
-						var marker = new google.maps.Marker({
-							position:results[0].geometry.location,
-							icon:icons["gas"].icon,
-							map:map
-						});
-					}
-					else {
-						console.log("ERROR " + status);
-					}
-				});
-				gasCounter++;
-			}, 600);
-		}
-		geocoder.geocode({"address":postAddress[postCounter]}, function(results, status) {
-			if(status == "OK") {
-				var marker = new google.maps.Marker({
-					position:results[0].geometry.location,
-					icon:icons["post"].icon,
-					map:map
-				});
-			}
-			else {
-				console.log("ERROR " + status);
-			}
-		});
-		postCounter++;
-	}, 600);
+    function initMap() {
+    var fcu = {lat:24.178709, lng:120.648306};
+    var geocoder = new google.maps.Geocoder();
+    var map = new google.maps.Map(document.getElementById("map"), {
+        zoom: 16,
+        center: fcu
+    });
+    postLocation.forEach(function(e, index) {
+        var marker = new google.maps.Marker({
+            position:e,
+            icon:icons["post"].icon,
+            map:map
+        });
+        var infowindow = new google.maps.InfoWindow({
+            content:postAddress[index]
+        });
+        marker.addListener("mouseover", function() {
+            infowindow.open(map, marker);
+        });
+        marker.addListener("mouseout", function() {
+            infowindow.close(map, marker);
+        });
+    });
+    gasLocation.forEach(function(e, index) {
+        var marker = new google.maps.Marker({
+            position:e,
+            icon:icons["post"].icon,
+            map:map
+        });
+        var infowindow = new google.maps.InfoWindow({
+            content:gasAddress[index]
+        });
+        marker.addListener("mouseover", function() {
+            infowindow.open(map, marker);
+        });
+        marker.addListener("mouseout", function() {
+            infowindow.close(map, marker);
+        });
+    });
 }
 </script>
 <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAFfUhLATzGpozEtqhjgE23EIjA5GY4cFQ&callback=initMap">
